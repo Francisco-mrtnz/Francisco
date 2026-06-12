@@ -686,15 +686,22 @@
                 secretRunCount += 1;
                 secretSkeleton.classList.remove('secret-skeleton-run', 'secret-skeleton-bounce');
                 secretSkeleton.style.opacity = '1';
+                secretSkeleton.style.left = '-18vw';
+                secretSkeleton.style.top = '30vh';
                 void secretSkeleton.offsetWidth;
                 secretSkeleton.classList.add('secret-skeleton-run');
                 playSecretSound();
 
+                clearTimeout(bounceTimer);
+                bounceTimer = setTimeout(function () {
+                    secretSkeleton.classList.remove('secret-skeleton-run');
+                    secretSkeleton.style.opacity = '0';
+                }, 5000);
+
                 if (secretRunCount >= 3) {
-                    clearTimeout(bounceTimer);
                     bounceTimer = setTimeout(function () {
                         startBounceMode();
-                    }, 2300);
+                    }, 5000);
                 }
             }
 
