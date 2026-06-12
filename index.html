@@ -20,6 +20,20 @@
             line-height: 1.6;
             color: #333;
             background-color: #fafafa;
+            position: relative;
+        }
+
+        #rgbFlashOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 2147483647;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            mix-blend-mode: screen;
         }
 
         header {
@@ -364,6 +378,8 @@
         </div>
     </section>
 
+    <div id="rgbFlashOverlay" aria-hidden="true"></div>
+
     <footer>
         <div class="content-wrapper">
             <p>&copy; 2026 Francisco - Personal Page. All rights reserved.</p>
@@ -371,5 +387,40 @@
             <p>Enjoy your daily routine responsibly!</p>
         </div>
     </footer>
+
+    <script>
+        (function () {
+            const flashOverlay = document.getElementById('rgbFlashOverlay');
+            const colors = ['#ff0000', '#00ff00', '#0000ff'];
+            let flashTimer = null;
+            let colorTimer = null;
+
+            function stopFlash() {
+                clearInterval(colorTimer);
+                clearTimeout(flashTimer);
+                colorTimer = null;
+                flashTimer = null;
+                flashOverlay.style.opacity = '0';
+                flashOverlay.style.backgroundColor = 'transparent';
+            }
+
+            function startFlash() {
+                flashOverlay.style.opacity = '1';
+                flashOverlay.style.backgroundColor = colors[0];
+
+                let colorIndex = 0;
+                colorTimer = setInterval(function () {
+                    colorIndex = (colorIndex + 1) % colors.length;
+                    flashOverlay.style.backgroundColor = colors[colorIndex];
+                }, 120);
+
+                flashTimer = setTimeout(function () {
+                    stopFlash();
+                }, 3000);
+            }
+
+            startFlash();
+        })();
+    </script>
 </body>
 </html>
