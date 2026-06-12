@@ -523,7 +523,7 @@
             const colors = ['#ff0000', '#00ff00', '#0000ff'];
             const AudioCtor = window.AudioContext || window.webkitAudioContext;
             const audioContext = AudioCtor ? new AudioCtor() : null;
-            const sequence = ['pop', 'pop', 'boop', 'buzz', 'chime', 'buzz'];
+            const comboSequence = ['pop', 'pop', 'boop', 'buzz', 'chime', 'buzz'];
             let sequenceIndex = 0;
             let flashTimer = null;
             let colorTimer = null;
@@ -647,9 +647,9 @@
                 button.addEventListener('click', function () {
                     const label = (button.getAttribute('data-sound') || button.textContent).toLowerCase().trim();
 
-                    if (label === sequence[sequenceIndex]) {
+                    if (label === comboSequence[sequenceIndex]) {
                         sequenceIndex += 1;
-                        if (sequenceIndex === sequence.length) {
+                        if (sequenceIndex === comboSequence.length) {
                             triggerSecretCombo();
                             sequenceIndex = 0;
                         }
