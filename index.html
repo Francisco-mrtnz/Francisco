@@ -286,26 +286,28 @@
 
         #secretSkeleton {
             position: fixed;
-            top: 25vh;
-            left: -15vw;
+            top: 32vh;
+            left: -18vw;
             z-index: 2100;
-            font-size: 72px;
+            font-size: 96px;
             line-height: 1;
             pointer-events: none;
-            filter: grayscale(1) contrast(1.1) blur(1px);
-            text-shadow: 0 0 12px rgba(148, 163, 184, 0.9), 0 0 24px rgba(56, 189, 248, 0.5);
+            filter: grayscale(1) contrast(1.2) blur(1px);
+            text-shadow: 0 0 14px rgba(148, 163, 184, 0.95), 0 0 28px rgba(56, 189, 248, 0.6);
             opacity: 0;
+            transform: scale(1.1);
         }
 
         .secret-skeleton-run {
-            animation: skeletonSprint 2.1s ease-in forwards;
+            animation: skeletonSprint 2.6s cubic-bezier(.2,.8,.2,1) forwards;
         }
 
         @keyframes skeletonSprint {
-            0% { left: -15vw; opacity: 0; transform: translateY(0) rotate(0deg); }
-            8% { opacity: 0.9; }
-            50% { transform: translateY(-8px) rotate(-4deg); }
-            100% { left: 110vw; opacity: 0; transform: translateY(8px) rotate(6deg); }
+            0% { left: -18vw; opacity: 0; transform: translateY(0) rotate(0deg) scale(1.1); }
+            8% { opacity: 1; }
+            35% { transform: translateY(-10px) rotate(-6deg) scale(1.18); }
+            65% { transform: translateY(6px) rotate(5deg) scale(1.12); }
+            100% { left: 110vw; opacity: 0; transform: translateY(10px) rotate(10deg) scale(1.05); }
         }
 
         @media (max-width: 1024px) {
