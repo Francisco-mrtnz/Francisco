@@ -27,6 +27,24 @@
             background-attachment: fixed;
             position: relative;
             overflow-x: hidden;
+            transition: filter 0.8s ease, background 0.8s ease;
+        }
+
+        body.day-theme {
+            background:
+                radial-gradient(circle at top, rgba(56, 189, 248, 0.10), transparent 28%),
+                radial-gradient(circle at 25% 15%, rgba(125, 211, 252, 0.08), transparent 16%),
+                linear-gradient(135deg, #0b1220 0%, #172554 48%, #020617 100%);
+            filter: brightness(0.82);
+        }
+
+        body.night-theme {
+            background:
+                radial-gradient(circle at top, rgba(192, 132, 252, 0.20), transparent 30%),
+                radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.12), transparent 18%),
+                radial-gradient(circle at 80% 0%, rgba(251, 191, 36, 0.12), transparent 20%),
+                linear-gradient(135deg, #020617 0%, #111827 45%, #030712 100%);
+            filter: brightness(1.08);
         }
 
         #rgbFlashOverlay {
@@ -430,11 +448,9 @@
 
             <div class="sound-board">
                 <button class="sound-btn" type="button" data-sound="pop" style="background: linear-gradient(135deg, #dc2626, #ef4444);">Pop</button>
-                <button class="sound-btn" type="button" data-sound="pop" style="background: linear-gradient(135deg, #dc2626, #ef4444);">Pop</button>
                 <button class="sound-btn" type="button" data-sound="boop" style="background: linear-gradient(135deg, #16a34a, #4ade80);">Boop</button>
                 <button class="sound-btn" type="button" data-sound="buzz" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);">Buzz</button>
                 <button class="sound-btn" type="button" data-sound="chime" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);">Chime</button>
-                <button class="sound-btn" type="button" data-sound="buzz" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);">Buzz</button>
             </div>
         </div>
     </section>
@@ -478,6 +494,26 @@
 
     <script>
         (function () {
+            function updateThemeByTime() {
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const currentTime = hours * 60 + minutes;
+                const dayStart = 6 * 60;
+                const dayEnd = 19 * 60 + 0;
+
+                document.body.classList.remove('day-theme', 'night-theme');
+
+                if (currentTime >= dayStart && currentTime < dayEnd) {
+                    document.body.classList.add('day-theme');
+                } else {
+                    document.body.classList.add('night-theme');
+                }
+            }
+
+            updateThemeByTime();
+            setInterval(updateThemeByTime, 60000);
+
             const flashOverlay = document.getElementById('rgbFlashOverlay');
             const secretSkeleton = document.getElementById('secretSkeleton');
             const colors = ['#ff0000', '#00ff00', '#0000ff'];
