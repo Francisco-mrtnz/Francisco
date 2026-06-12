@@ -18,8 +18,13 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #fafafa;
+            color: #e5eefb;
+            background:
+                radial-gradient(circle at top, rgba(124, 58, 237, 0.18), transparent 30%),
+                radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.10), transparent 18%),
+                radial-gradient(circle at 80% 0%, rgba(244, 114, 182, 0.12), transparent 20%),
+                linear-gradient(135deg, #020617 0%, #111827 45%, #030712 100%);
+            background-attachment: fixed;
             position: relative;
             overflow-x: hidden;
         }
@@ -38,28 +43,21 @@
             animation: none;
         }
 
-        body.rotate-on-refresh {
-            animation: fullScreenRotate 3s ease-in-out forwards;
-        }
-
-        @keyframes fullScreenRotate {
-            0% { transform: rotate(0deg); }
-            15% { transform: rotate(3deg); }
-            30% { transform: rotate(-3deg); }
-            45% { transform: rotate(4deg); }
-            60% { transform: rotate(-4deg); }
-            75% { transform: rotate(2deg); }
-            100% { transform: rotate(0deg); }
+        @keyframes rgbShift {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
         }
 
         header {
-            background: linear-gradient(135deg, #dc2626 0%, #000000 100%);
-            color: white;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.96) 0%, rgba(8, 47, 73, 0.98) 100%);
+            color: #eff6ff;
             padding: 20px 0;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.45);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            backdrop-filter: blur(10px);
         }
 
         nav {
@@ -83,7 +81,7 @@
         }
 
         nav a {
-            color: white;
+            color: #e0f2fe;
             text-decoration: none;
             transition: opacity 0.3s;
         }
@@ -93,7 +91,9 @@
         }
 
         .hero {
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.7) 0%, rgba(0, 0, 0, 0.8) 100%), url('https://images.unsplash.com/photo-1553531088-b79483e3d387?w=1200&h=600&fit=crop');
+            background:
+                linear-gradient(135deg, rgba(15, 23, 42, 0.78) 0%, rgba(2, 6, 23, 0.92) 100%),
+                url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1200&h=600&fit=crop');
             background-size: cover;
             background-position: center;
             height: 500px;
@@ -129,7 +129,7 @@
             text-align: center;
             font-size: 36px;
             margin-bottom: 40px;
-            color: #dc2626;
+            color: #bfdbfe;
             position: relative;
             padding-bottom: 15px;
         }
@@ -142,7 +142,7 @@
             transform: translateX(-50%);
             width: 100px;
             height: 3px;
-            background: #000000;
+            background: #38bdf8;
         }
 
         .content-wrapper {
@@ -152,8 +152,8 @@
         }
 
         footer {
-            background: linear-gradient(135deg, #000000 0%, #1f2937 100%);
-            color: white;
+            background: linear-gradient(135deg, #020617 0%, #111827 60%, #172554 100%);
+            color: #eff6ff;
             text-align: center;
             padding: 30px 0;
             margin-top: 40px;
@@ -184,10 +184,11 @@
         }
 
         .grid-card {
-            background: white;
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.96));
+            border: 1px solid rgba(148, 163, 184, 0.18);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.35);
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
@@ -195,11 +196,11 @@
 
         .grid-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+            box-shadow: 0 12px 30px rgba(56, 189, 248, 0.18);
         }
 
         .grid-card h3 {
-            color: #dc2626;
+            color: #c4b5fd;
             margin-bottom: 15px;
             font-size: 18px;
         }
@@ -210,6 +211,35 @@
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 10px;
+        }
+
+        .sound-board {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            max-width: 900px;
+            margin: 30px auto 0;
+        }
+
+        .sound-btn {
+            border: none;
+            border-radius: 14px;
+            padding: 16px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+            transition: transform 0.15s ease, filter 0.15s ease;
+        }
+
+        .sound-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            filter: brightness(1.08);
+        }
+
+        .sound-btn:active {
+            transform: scale(0.98);
         }
 
         @media (max-width: 1024px) {
@@ -285,7 +315,7 @@
             <div class="gif-container">
                     <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&h=300&fit=crop" alt="friends hanging out">
             </div>
-            <p style="max-width:800px; margin: 20px auto; font-size:18px; text-align:center; color:#444;">I enjoy time with friends, gaming, good music, and staying busy with creative work and personal projects.</p>
+            <p style="max-width:800px; margin: 20px auto; font-size:18px; text-align:center; color:#444;">I’m someone who values balance between fun and purpose. I enjoy spending time with friends, getting lost in games, listening to music that sets the mood, and staying productive through creative work and personal projects. My days usually mix relaxation, curiosity, and a little bit of ambition, which helps me stay grounded while still exploring new ideas and experiences.</p>
         </div>
     </section>
 
@@ -368,6 +398,21 @@
         </div>
     </section>
 
+    <!-- SOUND LAB -->
+    <section id="soundlab" style="background: linear-gradient(135deg, #fff7ed 0%, #f3f4f6 100%); padding: 60px 0;">
+        <div class="content-wrapper">
+            <h2 class="section-title">Sound Lab</h2>
+            <p style="text-align: center; color: #444; font-size: 18px; max-width: 700px; margin: 0 auto 10px;">Click the buttons below for playful random noises and tiny sound effects.</p>
+
+            <div class="sound-board">
+                <button class="sound-btn" type="button" style="background: linear-gradient(135deg, #dc2626, #ef4444);">Pop!</button>
+                <button class="sound-btn" type="button" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);">Buzz!</button>
+                <button class="sound-btn" type="button" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);">Chime!</button>
+                <button class="sound-btn" type="button" style="background: linear-gradient(135deg, #16a34a, #4ade80);">Boop!</button>
+            </div>
+        </div>
+    </section>
+
     <!-- CONTACT -->
     <section id="contact" style="background: white; padding: 60px 0;">
         <div class="content-wrapper">
@@ -410,6 +455,7 @@
             const colors = ['#ff0000', '#00ff00', '#0000ff'];
             let flashTimer = null;
             let colorTimer = null;
+            const audioContext = window.AudioContext || window.webkitAudioContext ? new (window.AudioContext || window.webkitAudioContext)() : null;
 
             function stopFlash() {
                 clearInterval(colorTimer);
@@ -435,11 +481,43 @@
                 }, 3000);
             }
 
+            function playRandomNoise() {
+                if (!audioContext) return;
+
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+
+                const now = audioContext.currentTime;
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                const filter = audioContext.createBiquadFilter();
+                const types = ['sine', 'square', 'sawtooth', 'triangle'];
+
+                osc.type = types[Math.floor(Math.random() * types.length)];
+                osc.frequency.setValueAtTime(Math.random() * 900 + 180, now);
+                osc.frequency.exponentialRampToValueAtTime(Math.random() * 900 + 180, now + 0.25);
+
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(Math.random() * 1000 + 600, now);
+
+                gain.gain.setValueAtTime(0.0001, now);
+                gain.gain.exponentialRampToValueAtTime(Math.random() * 0.05 + 0.02, now + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioContext.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.35);
+            }
+
+            document.querySelectorAll('.sound-btn').forEach(function (button) {
+                button.addEventListener('click', playRandomNoise);
+            });
+
             startFlash();
-            document.body.classList.add('rotate-on-refresh');
-            setTimeout(function () {
-                document.body.classList.remove('rotate-on-refresh');
-            }, 3000);
         })();
     </script>
 </body>
