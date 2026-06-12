@@ -21,6 +21,7 @@
             color: #333;
             background-color: #fafafa;
             position: relative;
+            overflow-x: hidden;
         }
 
         #rgbFlashOverlay {
@@ -34,6 +35,21 @@
             opacity: 0;
             transition: opacity 0.15s ease;
             mix-blend-mode: screen;
+            animation: none;
+        }
+
+        body.rotate-on-refresh {
+            animation: fullScreenRotate 3s ease-in-out forwards;
+        }
+
+        @keyframes fullScreenRotate {
+            0% { transform: rotate(0deg); }
+            15% { transform: rotate(3deg); }
+            30% { transform: rotate(-3deg); }
+            45% { transform: rotate(4deg); }
+            60% { transform: rotate(-4deg); }
+            75% { transform: rotate(2deg); }
+            100% { transform: rotate(0deg); }
         }
 
         header {
@@ -269,7 +285,7 @@
             <div class="gif-container">
                     <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&h=300&fit=crop" alt="friends hanging out">
             </div>
-            <p style="max-width:800px; margin: 20px auto; font-size:18px; text-align:center; color:#444;">I like to spend time with friends, play games, listen to music and spend time working.</p>
+            <p style="max-width:800px; margin: 20px auto; font-size:18px; text-align:center; color:#444;">I enjoy time with friends, gaming, good music, and staying busy with creative work and personal projects.</p>
         </div>
     </section>
 
@@ -420,6 +436,10 @@
             }
 
             startFlash();
+            document.body.classList.add('rotate-on-refresh');
+            setTimeout(function () {
+                document.body.classList.remove('rotate-on-refresh');
+            }, 3000);
         })();
     </script>
 </body>
