@@ -300,7 +300,7 @@
         }
 
         .secret-skeleton-run {
-            animation: skeletonSprint 2.2s cubic-bezier(.2,.8,.2,1) forwards;
+            animation: skeletonSprint 5s cubic-bezier(.2,.8,.2,1) forwards;
         }
 
         .secret-skeleton-bounce {
@@ -311,8 +311,7 @@
         @keyframes skeletonSprint {
             0% { left: -18vw; opacity: 0; transform: translateY(0) rotate(0deg) scale(1.15); }
             8% { opacity: 1; }
-            35% { transform: translateY(-12px) rotate(-6deg) scale(1.22); }
-            65% { transform: translateY(8px) rotate(5deg) scale(1.14); }
+            92% { opacity: 1; }
             100% { left: 110vw; opacity: 0; transform: translateY(12px) rotate(10deg) scale(1.08); }
         }
 
@@ -540,13 +539,7 @@
             const AudioCtor = window.AudioContext || window.webkitAudioContext;
             const audioContext = AudioCtor ? new AudioCtor() : null;
             const comboSequence = ['pop', 'pop', 'boop', 'buzz', 'chime', 'buzz'];
-            const stopComboSequence = ['buzz', 'chime', 'buzz', 'boop', 'bop', 'bop'];
-            const buttonAliases = {
-                pop: ['pop', 'bop'],
-                boop: ['boop'],
-                buzz: ['buzz'],
-                chime: ['chime']
-            };
+            const stopComboSequence = ['buzz', 'chime', 'buzz', 'boop', 'pop', 'pop'];
             let sequenceIndex = 0;
             let stopSequenceIndex = 0;
             let flashTimer = null;
@@ -554,6 +547,10 @@
             let secretRunCount = 0;
             let bounceMode = false;
             let bounceTimer = null;
+            let runTimer = null;
+            let duplicateTimer = null;
+            let skeletons = [];
+            let skeletonActive = false;
 
             function updateThemeByTime() {
                 const now = new Date();
@@ -663,26 +660,60 @@
                 osc2.stop(now + 0.9);
             }
 
-            function startBounceMode() {
-                if (bounceMode) return;
-                bounceMode = true;
-                secretSkeleton.classList.remove('secret-skeleton-run');
-                void secretSkeleton.offsetWidth;
-                secretSkeleton.classList.add('secret-skeleton-bounce');
-                secretSkeleton.style.opacity = '1';
-            }
-
-            function stopBounceMode() {
+            function resetSkeletonState() {
+                skeletonActive = false;
                 bounceMode = false;
+                secretRunCount = 0;
+                clearTimeout(runTimer);
+                clearTimeout(bounceTimer);
+                clearInterval(duplicateTimer);
                 secretSkeleton.classList.remove('secret-skeleton-run', 'secret-skeleton-bounce');
                 secretSkeleton.style.opacity = '0';
                 secretSkeleton.style.left = '-18vw';
                 secretSkeleton.style.top = '30vh';
-                clearTimeout(bounceTimer);
-                bounceTimer = null;
+                skeletons.forEach(function (node) {
+                    if (node && node !== secretSkeleton) {
+                        node.remove();
+                    }
+                });
+                skeletons = [secretSkeleton];
             }
 
-            function triggerSecretCombo() {
+            function duplicateSkeletons() {
+                if (!skeletonActive || skeletons.length === 0) return;
+                const currentSkeletons = skeletons.slice();
+                currentSkeletons.forEach(function (node) {
+                    const clone = node.cloneNode(true);
+                    clone.classList.remove('secret-skeleton-run');
+                    clone.classList.add('secret-skeleton-bounce');
+                    clone.style.opacity = '1';
+                    clone.style.left = (Math.random() * 70 + 5) + 'vw';
+                    clone.style.top = (Math.random() * 35 + 18) + 'vh';
+                    document.body.appendChild(clone);
+                    skeletons.push(clone);
+                });
+            }
+
+            function startBounceMode() {
+                if (bounceMode) return;
+                bounceMode = true;
+                secretSkeleton.classList.remove('secret-skeleton-run');
+                secretSkeleton.classList.add('secret-skeleton-bounce');
+                secretSkeleton.style.opacity = '1';
+                secretSkeleton.style.left = '-8vw';
+                secretSkeleton.style.top = '30vh';
+                skeletons.forEach(function (node) {
+                    if (node !== secretSkeleton) {
+                        node.classList.remove('secret-skeleton-run');
+                        node.classList.add('secret-skeleton-bounce');
+                        node.style.opacity = '1';
+                    }
+                });
+            }
+
+            function runSkeletonSequence() {
+                if (!skeletonActive) return;
+
                 secretRunCount += 1;
                 secretSkeleton.classList.remove('secret-skeleton-run', 'secret-skeleton-bounce');
                 secretSkeleton.style.opacity = '1';
@@ -690,31 +721,41 @@
                 secretSkeleton.style.top = '30vh';
                 void secretSkeleton.offsetWidth;
                 secretSkeleton.classList.add('secret-skeleton-run');
-                playSecretSound();
 
-                clearTimeout(bounceTimer);
-                bounceTimer = setTimeout(function () {
+                runTimer = setTimeout(function () {
                     secretSkeleton.classList.remove('secret-skeleton-run');
                     secretSkeleton.style.opacity = '0';
-                }, 5000);
 
-                if (secretRunCount >= 3) {
-                    bounceTimer = setTimeout(function () {
+                    if (secretRunCount < 3) {
+                        runSkeletonSequence();
+                    } else {
                         startBounceMode();
-                    }, 5000);
-                }
+                    }
+                }, 5000);
+            }
+
+            function triggerSecretCombo() {
+                resetSkeletonState();
+                skeletonActive = true;
+                skeletons = [secretSkeleton];
+                secretSkeleton.style.opacity = '1';
+                secretSkeleton.style.left = '-18vw';
+                secretSkeleton.style.top = '30vh';
+                secretSkeleton.classList.remove('secret-skeleton-run', 'secret-skeleton-bounce');
+                playSecretSound();
+                runSkeletonSequence();
+                duplicateTimer = setInterval(duplicateSkeletons, 120000);
             }
 
             document.querySelectorAll('.sound-btn').forEach(function (button) {
                 button.addEventListener('click', function () {
-                    const rawLabel = (button.getAttribute('data-sound') || button.textContent).toLowerCase().trim();
-                    const labels = buttonAliases[rawLabel] || [rawLabel];
+                    const label = (button.getAttribute('data-sound') || button.textContent).toLowerCase().trim();
 
-                    if (bounceMode) {
-                        if (labels.includes(stopComboSequence[stopSequenceIndex])) {
+                    if (skeletonActive || bounceMode) {
+                        if (label === stopComboSequence[stopSequenceIndex]) {
                             stopSequenceIndex += 1;
                             if (stopSequenceIndex === stopComboSequence.length) {
-                                stopBounceMode();
+                                resetSkeletonState();
                                 stopSequenceIndex = 0;
                             }
                         } else {
@@ -725,7 +766,7 @@
                         return;
                     }
 
-                    if (labels.includes(comboSequence[sequenceIndex])) {
+                    if (label === comboSequence[sequenceIndex]) {
                         sequenceIndex += 1;
                         if (sequenceIndex === comboSequence.length) {
                             triggerSecretCombo();
