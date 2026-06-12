@@ -215,9 +215,9 @@
 
         .sound-board {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 16px;
-            max-width: 900px;
+            max-width: 980px;
             margin: 30px auto 0;
         }
 
@@ -240,6 +240,30 @@
 
         .sound-btn:active {
             transform: scale(0.98);
+        }
+
+        #secretSkeleton {
+            position: fixed;
+            top: 25vh;
+            left: -15vw;
+            z-index: 2100;
+            font-size: 72px;
+            line-height: 1;
+            pointer-events: none;
+            filter: grayscale(1) contrast(1.1) blur(1px);
+            text-shadow: 0 0 12px rgba(148, 163, 184, 0.9), 0 0 24px rgba(56, 189, 248, 0.5);
+            opacity: 0;
+        }
+
+        .secret-skeleton-run {
+            animation: skeletonSprint 2.1s ease-in forwards;
+        }
+
+        @keyframes skeletonSprint {
+            0% { left: -15vw; opacity: 0; transform: translateY(0) rotate(0deg); }
+            8% { opacity: 0.9; }
+            50% { transform: translateY(-8px) rotate(-4deg); }
+            100% { left: 110vw; opacity: 0; transform: translateY(8px) rotate(6deg); }
         }
 
         @media (max-width: 1024px) {
@@ -405,10 +429,12 @@
             <p style="text-align: center; color: #444; font-size: 18px; max-width: 700px; margin: 0 auto 10px;">Click the buttons below for playful random noises and tiny sound effects.</p>
 
             <div class="sound-board">
-                <button class="sound-btn" type="button" style="background: linear-gradient(135deg, #dc2626, #ef4444);">Pop!</button>
-                <button class="sound-btn" type="button" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);">Buzz!</button>
-                <button class="sound-btn" type="button" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);">Chime!</button>
-                <button class="sound-btn" type="button" style="background: linear-gradient(135deg, #16a34a, #4ade80);">Boop!</button>
+                <button class="sound-btn" type="button" data-sound="pop" style="background: linear-gradient(135deg, #dc2626, #ef4444);">Pop</button>
+                <button class="sound-btn" type="button" data-sound="pop" style="background: linear-gradient(135deg, #dc2626, #ef4444);">Pop</button>
+                <button class="sound-btn" type="button" data-sound="boop" style="background: linear-gradient(135deg, #16a34a, #4ade80);">Boop</button>
+                <button class="sound-btn" type="button" data-sound="buzz" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);">Buzz</button>
+                <button class="sound-btn" type="button" data-sound="chime" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);">Chime</button>
+                <button class="sound-btn" type="button" data-sound="buzz" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);">Buzz</button>
             </div>
         </div>
     </section>
@@ -440,6 +466,7 @@
     </section>
 
     <div id="rgbFlashOverlay" aria-hidden="true"></div>
+    <div id="secretSkeleton" aria-hidden="true">💀</div>
 
     <footer>
         <div class="content-wrapper">
@@ -452,10 +479,14 @@
     <script>
         (function () {
             const flashOverlay = document.getElementById('rgbFlashOverlay');
+            const secretSkeleton = document.getElementById('secretSkeleton');
             const colors = ['#ff0000', '#00ff00', '#0000ff'];
             let flashTimer = null;
             let colorTimer = null;
-            const audioContext = window.AudioContext || window.webkitAudioContext ? new (window.AudioContext || window.webkitAudioContext)() : null;
+            const AudioCtor = window.AudioContext || window.webkitAudioContext;
+            const audioContext = AudioCtor ? new AudioCtor() : null;
+            const sequence = ['pop', 'pop', 'boop', 'buzz', 'chime', 'buzz'];
+            let sequenceIndex = 0;
 
             function stopFlash() {
                 clearInterval(colorTimer);
@@ -513,8 +544,67 @@
                 osc.stop(now + 0.35);
             }
 
+            function playSecretSound() {
+                if (!audioContext) return;
+
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+
+                const now = audioContext.currentTime;
+                const osc1 = audioContext.createOscillator();
+                const osc2 = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                const filter = audioContext.createBiquadFilter();
+
+                osc1.type = 'sawtooth';
+                osc2.type = 'square';
+                osc1.frequency.setValueAtTime(110, now);
+                osc2.frequency.setValueAtTime(220, now);
+                osc1.frequency.exponentialRampToValueAtTime(55, now + 0.8);
+                osc2.frequency.exponentialRampToValueAtTime(110, now + 0.8);
+
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(450, now);
+
+                gain.gain.setValueAtTime(0.0001, now);
+                gain.gain.exponentialRampToValueAtTime(0.03, now + 0.03);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+
+                osc1.connect(filter);
+                osc2.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioContext.destination);
+
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + 0.9);
+                osc2.stop(now + 0.9);
+            }
+
+            function triggerSecretCombo() {
+                secretSkeleton.classList.remove('secret-skeleton-run');
+                void secretSkeleton.offsetWidth;
+                secretSkeleton.classList.add('secret-skeleton-run');
+                playSecretSound();
+            }
+
             document.querySelectorAll('.sound-btn').forEach(function (button) {
-                button.addEventListener('click', playRandomNoise);
+                button.addEventListener('click', function () {
+                    const label = (button.getAttribute('data-sound') || button.textContent).toLowerCase().trim();
+
+                    if (label === sequence[sequenceIndex]) {
+                        sequenceIndex += 1;
+                        if (sequenceIndex === sequence.length) {
+                            triggerSecretCombo();
+                            sequenceIndex = 0;
+                        }
+                    } else {
+                        sequenceIndex = 0;
+                    }
+
+                    playRandomNoise();
+                });
             });
 
             startFlash();
