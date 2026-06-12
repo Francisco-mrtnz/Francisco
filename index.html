@@ -61,6 +61,30 @@
             animation: none;
         }
 
+        #secretSkeleton {
+            position: fixed;
+            top: 25vh;
+            left: -15vw;
+            z-index: 2100;
+            font-size: 72px;
+            line-height: 1;
+            pointer-events: none;
+            filter: grayscale(1) contrast(1.1) blur(1px);
+            text-shadow: 0 0 12px rgba(148, 163, 184, 0.9), 0 0 24px rgba(56, 189, 248, 0.5);
+            opacity: 0;
+        }
+
+        .secret-skeleton-run {
+            animation: skeletonSprint 2.1s ease-in forwards;
+        }
+
+        @keyframes skeletonSprint {
+            0% { left: -15vw; opacity: 0; transform: translateY(0) rotate(0deg); }
+            8% { opacity: 0.9; }
+            50% { transform: translateY(-8px) rotate(-4deg); }
+            100% { left: 110vw; opacity: 0; transform: translateY(8px) rotate(6deg); }
+        }
+
         @keyframes rgbShift {
             0% { filter: hue-rotate(0deg); }
             100% { filter: hue-rotate(360deg); }
@@ -233,7 +257,7 @@
 
         .sound-board {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 16px;
             max-width: 980px;
             margin: 30px auto 0;
@@ -494,13 +518,23 @@
 
     <script>
         (function () {
+            const flashOverlay = document.getElementById('rgbFlashOverlay');
+            const secretSkeleton = document.getElementById('secretSkeleton');
+            const colors = ['#ff0000', '#00ff00', '#0000ff'];
+            const AudioCtor = window.AudioContext || window.webkitAudioContext;
+            const audioContext = AudioCtor ? new AudioCtor() : null;
+            const sequence = ['pop', 'pop', 'boop', 'buzz', 'chime', 'buzz'];
+            let sequenceIndex = 0;
+            let flashTimer = null;
+            let colorTimer = null;
+
             function updateThemeByTime() {
                 const now = new Date();
                 const hours = now.getHours();
                 const minutes = now.getMinutes();
                 const currentTime = hours * 60 + minutes;
                 const dayStart = 6 * 60;
-                const dayEnd = 19 * 60 + 0;
+                const dayEnd = 19 * 60;
 
                 document.body.classList.remove('day-theme', 'night-theme');
 
@@ -510,19 +544,6 @@
                     document.body.classList.add('night-theme');
                 }
             }
-
-            updateThemeByTime();
-            setInterval(updateThemeByTime, 60000);
-
-            const flashOverlay = document.getElementById('rgbFlashOverlay');
-            const secretSkeleton = document.getElementById('secretSkeleton');
-            const colors = ['#ff0000', '#00ff00', '#0000ff'];
-            let flashTimer = null;
-            let colorTimer = null;
-            const AudioCtor = window.AudioContext || window.webkitAudioContext;
-            const audioContext = AudioCtor ? new AudioCtor() : null;
-            const sequence = ['pop', 'pop', 'boop', 'buzz', 'chime', 'buzz'];
-            let sequenceIndex = 0;
 
             function stopFlash() {
                 clearInterval(colorTimer);
@@ -543,9 +564,7 @@
                     flashOverlay.style.backgroundColor = colors[colorIndex];
                 }, 120);
 
-                flashTimer = setTimeout(function () {
-                    stopFlash();
-                }, 3000);
+                flashTimer = setTimeout(stopFlash, 3000);
             }
 
             function playRandomNoise() {
@@ -564,7 +583,6 @@
                 osc.type = types[Math.floor(Math.random() * types.length)];
                 osc.frequency.setValueAtTime(Math.random() * 900 + 180, now);
                 osc.frequency.exponentialRampToValueAtTime(Math.random() * 900 + 180, now + 0.25);
-
                 filter.type = 'lowpass';
                 filter.frequency.setValueAtTime(Math.random() * 1000 + 600, now);
 
@@ -643,6 +661,8 @@
                 });
             });
 
+            updateThemeByTime();
+            setInterval(updateThemeByTime, 60000);
             startFlash();
         })();
     </script>
