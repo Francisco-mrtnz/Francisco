@@ -578,6 +578,30 @@ body.theme-contact .contact-link::before {
     border: 1px solid rgba(121, 95, 61, 0.28);
 }
 
+.contact-clock-panel {
+    margin-top: 24px;
+    border: 1px dashed rgba(121, 95, 61, 0.42);
+    border-radius: 6px;
+    background: rgba(255, 247, 229, 0.7);
+    padding: 18px;
+    text-align: center;
+}
+
+.contact-clock-panel h3 {
+    margin-bottom: 8px;
+    font-size: 30px;
+    color: #6b4b2a;
+}
+
+.contact-clock-panel time {
+    display: inline-block;
+    font-size: 40px;
+    font-weight: 700;
+    color: #4d3925;
+    letter-spacing: 0.06em;
+    font-family: "Courier New", monospace;
+}
+
 @keyframes spinGlow {
     from {
         transform: rotate(0deg);
