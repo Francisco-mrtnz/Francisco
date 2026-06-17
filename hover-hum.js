@@ -6,7 +6,7 @@
     let humGain = null;
     let humOscA = null;
     let humOscB = null;
-    let activeTarget = null;
+    let activeSource = null;
 
     function ensureHumNodes() {
         if (!audioContext) return false;
@@ -40,8 +40,8 @@
         }
     }
 
-    function startHum(target) {
-        if (!audioContext || !target) return;
+    function startHum(source) {
+        if (!audioContext || !source) return;
         unlockAudioContext();
         if (!ensureHumNodes()) return;
 
@@ -49,18 +49,18 @@
         humGain.gain.cancelScheduledValues(now);
         humGain.gain.setValueAtTime(Math.max(humGain.gain.value, 0.0001), now);
         humGain.gain.exponentialRampToValueAtTime(0.018, now + 0.06);
-        activeTarget = target;
+        activeSource = source;
     }
 
-    function stopHum(target) {
+    function stopHum(source) {
         if (!audioContext || !humGain) return;
-        if (target && activeTarget && target !== activeTarget) return;
+        if (source && activeSource && source !== activeSource) return;
 
         const now = audioContext.currentTime;
         humGain.gain.cancelScheduledValues(now);
         humGain.gain.setValueAtTime(Math.max(humGain.gain.value, 0.0001), now);
         humGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
-        activeTarget = null;
+        activeSource = null;
     }
 
     function getInteractiveTarget(node) {
@@ -91,11 +91,24 @@
 
     document.addEventListener('visibilitychange', function () {
         if (document.hidden) {
-            stopHum(activeTarget);
+            stopHum(activeSource);
         }
     });
 
     window.addEventListener('blur', function () {
-        stopHum(activeTarget);
+        stopHum(activeSource);
     });
+
+    window.__hoverHum = {
+        unlock: unlockAudioContext,
+        startForElement: function (element) {
+            const source = element || '__external-hum';
+            startHum(source);
+            return source;
+        },
+        stopForElement: function (element) {
+            const source = element || '__external-hum';
+            stopHum(source);
+        }
+    };
 })();
