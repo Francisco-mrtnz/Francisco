@@ -8,6 +8,8 @@
     --bg-1: #020617;
     --bg-2: #111827;
     --bg-3: #172554;
+    --header-a: rgba(15, 23, 42, 0.96);
+    --header-b: rgba(8, 47, 73, 0.98);
     --card-1: rgba(15, 23, 42, 0.95);
     --card-2: rgba(30, 41, 59, 0.9);
     --text-main: #f8fafc;
@@ -32,7 +34,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(8, 47, 73, 0.98));
+    background: linear-gradient(135deg, var(--header-a), var(--header-b));
     border-bottom: 1px solid var(--border-soft);
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.45);
     backdrop-filter: blur(10px);
@@ -262,6 +264,106 @@ footer {
     text-align: center;
     color: var(--text-soft);
     padding: 24px 12px 34px;
+}
+
+body.theme-summary {
+    --bg-1: #1f2937;
+    --bg-2: #334155;
+    --bg-3: #475569;
+    --header-a: rgba(30, 41, 59, 0.94);
+    --header-b: rgba(71, 85, 105, 0.96);
+    --card-1: rgba(51, 65, 85, 0.92);
+    --card-2: rgba(71, 85, 105, 0.88);
+    --accent-a: #fcd34d;
+    --accent-b: #f59e0b;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+body.theme-hobbies {
+    --bg-1: #0f172a;
+    --bg-2: #1d4ed8;
+    --bg-3: #0ea5e9;
+    --header-a: rgba(30, 64, 175, 0.94);
+    --header-b: rgba(14, 165, 233, 0.95);
+    --card-1: rgba(30, 58, 138, 0.9);
+    --card-2: rgba(14, 116, 144, 0.88);
+    --accent-a: #fef08a;
+    --accent-b: #f97316;
+    font-family: "Comic Sans MS", "Trebuchet MS", sans-serif;
+}
+
+body.theme-skills {
+    --bg-1: #111827;
+    --bg-2: #1f2937;
+    --bg-3: #374151;
+    --header-a: rgba(17, 24, 39, 0.95);
+    --header-b: rgba(31, 41, 55, 0.97);
+    --card-1: rgba(31, 41, 55, 0.94);
+    --card-2: rgba(55, 65, 81, 0.92);
+    --accent-a: #34d399;
+    --accent-b: #22d3ee;
+    font-family: "Lucida Console", "Courier New", monospace;
+}
+
+body.theme-favorites {
+    --bg-1: #3f0d12;
+    --bg-2: #7f1d1d;
+    --bg-3: #be123c;
+    --header-a: rgba(127, 29, 29, 0.94);
+    --header-b: rgba(190, 24, 93, 0.94);
+    --card-1: rgba(127, 29, 29, 0.9);
+    --card-2: rgba(136, 19, 55, 0.88);
+    --accent-a: #fda4af;
+    --accent-b: #fecdd3;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+body.theme-soundlab {
+    --bg-1: #020617;
+    --bg-2: #312e81;
+    --bg-3: #0f766e;
+    --header-a: rgba(49, 46, 129, 0.95);
+    --header-b: rgba(15, 118, 110, 0.95);
+    --card-1: rgba(30, 27, 75, 0.9);
+    --card-2: rgba(15, 118, 110, 0.84);
+    --accent-a: #22d3ee;
+    --accent-b: #a78bfa;
+    font-family: "Trebuchet MS", "Franklin Gothic Medium", Arial, sans-serif;
+}
+
+body.theme-soundlab .paper {
+    box-shadow: 0 0 26px rgba(34, 211, 238, 0.3), 0 0 8px rgba(167, 139, 250, 0.28);
+}
+
+body.theme-contact {
+    --header-a: rgba(207, 191, 160, 0.98);
+    --header-b: rgba(196, 178, 142, 0.98);
+    --card-1: rgba(248, 238, 214, 0.95);
+    --card-2: rgba(240, 229, 202, 0.92);
+    --text-main: #3a2d1d;
+    --text-soft: #5f4c35;
+    --accent-a: #7b5a3c;
+    --accent-b: #a67c52;
+    --border-soft: rgba(121, 95, 61, 0.35);
+    font-family: "Brush Script MT", "Lucida Handwriting", cursive;
+    background:
+        linear-gradient(90deg, rgba(185, 167, 136, 0.22) 0 2px, transparent 2px 120px),
+        linear-gradient(rgba(181, 162, 130, 0.18) 0 2px, transparent 2px 120px),
+        linear-gradient(135deg, #f3e7cd 0%, #e8d7b7 55%, #dcc69f 100%);
+}
+
+body.theme-contact header {
+    box-shadow: 0 6px 16px rgba(99, 73, 42, 0.25);
+}
+
+body.theme-contact .paper,
+body.theme-contact .card {
+    border-style: dashed;
+}
+
+body.theme-contact .contact-link {
+    color: #3a2d1d;
+    border: 1px solid rgba(121, 95, 61, 0.45);
 }
 
 @media (max-width: 960px) {
