@@ -62,7 +62,7 @@
             <div class="update-card">
                 <h3>Website Update Status</h3>
                 <p class="update-row"><span class="update-label">Last updated:</span><time id="lastUpdatedDate" datetime=""></time></p>
-                <p class="update-row" style="margin-bottom: 0;"><span class="update-label">Update details:</span><span id="lastUpdatedDescription"></span></p>
+                <p class="update-row" style="margin-bottom: 0;"><span class="update-label">Cover description:</span><span id="lastUpdatedDescription"></span></p>
             </div>
             <a class="secret-door" href="secret.html" aria-label="Open secret carnival game" title="You found something hidden">●</a>
         </section>
@@ -79,6 +79,7 @@
                 date: '2026-06-18',
                 description: 'Added the secret carnival page with hit-the-target rounds, timer, scoreboard, and high-score celebration.'
             };
+            const coverDescription = 'Recent site improvements are tracked here. Full details are hidden for a cleaner view.';
 
             const lastUpdatedDate = document.getElementById('lastUpdatedDate');
             const lastUpdatedDescription = document.getElementById('lastUpdatedDescription');
@@ -106,7 +107,7 @@
                     day: 'numeric'
                 });
                 const isoDate = dateSource.toISOString().slice(0, 10);
-                const safeDescription = latestUpdate.description || 'General website maintenance and content improvements.';
+                const safeDescription = coverDescription || 'Recent updates are available.';
 
                 lastUpdatedDate.setAttribute('datetime', isoDate);
                 lastUpdatedDate.textContent = formattedDate;
