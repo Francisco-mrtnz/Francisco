@@ -76,29 +76,41 @@
     <script>
         (function () {
             const latestUpdate = {
-                date: '2026-06-17',
-                page: 'all pages',
-                description: "'all pages' added 'Interactive physics ball: click, drag, throw with growing momentum, and trigger hum when it passes over links/buttons.'"
+                date: '2026-06-18',
+                description: 'Added the secret carnival page with hit-the-target rounds, timer, scoreboard, and high-score celebration.'
             };
 
             const lastUpdatedDate = document.getElementById('lastUpdatedDate');
             const lastUpdatedDescription = document.getElementById('lastUpdatedDescription');
 
+            function getFallbackDate() {
+                const modified = new Date(document.lastModified);
+                return Number.isNaN(modified.getTime())
+                    ? new Date()
+                    : modified;
+            }
+
+            function getSafeDateSource() {
+                if (!latestUpdate.date) return getFallbackDate();
+                const parsedDate = new Date(latestUpdate.date + 'T00:00:00');
+                return Number.isNaN(parsedDate.getTime()) ? getFallbackDate() : parsedDate;
+            }
+
             function renderUpdateMeta() {
                 if (!lastUpdatedDate || !lastUpdatedDescription) return;
 
-                const parsedDate = new Date(latestUpdate.date + 'T00:00:00');
-                const formattedDate = Number.isNaN(parsedDate.getTime())
-                    ? latestUpdate.date
-                    : parsedDate.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
+                const dateSource = getSafeDateSource();
+                const formattedDate = dateSource.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                const isoDate = dateSource.toISOString().slice(0, 10);
+                const safeDescription = latestUpdate.description || 'General website maintenance and content improvements.';
 
-                lastUpdatedDate.setAttribute('datetime', latestUpdate.date);
+                lastUpdatedDate.setAttribute('datetime', isoDate);
                 lastUpdatedDate.textContent = formattedDate;
-                lastUpdatedDescription.textContent = latestUpdate.description;
+                lastUpdatedDescription.textContent = safeDescription;
             }
 
             renderUpdateMeta();
